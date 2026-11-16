@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lebendiger Adventskalender Marienthal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Work+Sans:wght@400;500;600&display=swap">
+<style id="app-style">
+:root{
+  --bg:#0a1f15; --panel:#11301f; --land:#123323; --street-hi:#3d6a52;
+  --text:#eef4ee; --muted:#a7bfae; --gold:#f5c451; --red:#d23c34; --red-hi:#ff6a5e;
+  --line:#21472f; --danger:#ff8a7a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:"Work Sans",system-ui,sans-serif}
+body{min-height:100vh;background:
+  radial-gradient(1200px 500px at 70% -10%,#16422b 0%,transparent 60%),
+  radial-gradient(800px 400px at 0% 0%,#123a26 0%,transparent 55%),var(--bg)}
+.wrap{max-width:1120px;margin:0 auto;padding:28px 20px 60px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--red-hi);font-weight:600}
+h1{font-family:"Fraunces",serif;font-weight:700;font-size:clamp(28px,4.4vw,46px);line-height:1.05;margin:6px 0 8px;letter-spacing:-.01em}
+.intro{color:var(--muted);max-width:620px;margin:0;line-height:1.5;font-size:15px}
+.status{background:rgba(210,60,52,.16);border:1px solid rgba(255,106,94,.5);color:#ffd2cc;border-radius:999px;padding:8px 14px;font-size:14px;white-space:nowrap}
+.mapcard{position:relative;background:var(--land);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mapscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.mapcard svg{display:block;width:100%;height:auto;touch-action:pan-x pan-y}
+.mapnote{position:absolute;left:12px;bottom:10px;font-size:11px;color:#8fb09b;pointer-events:none;background:rgba(10,31,21,.7);padding:2px 8px;border-radius:6px}
+.star{cursor:pointer;outline:none}
+.star .shape{fill:var(--gold);stroke:#fff3cf;stroke-width:2.4;filter:url(#glow);transition:transform .15s}
+.star text{font:700 22px "Work Sans",sans-serif;fill:#3a2600;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.star:hover .shape,.star:focus-visible .shape{transform:scale(1.18)}
+.star.past .shape{fill:#8a7440;stroke:#b9a56f;filter:none}
+.star.past text{fill:#2a2110}
+.star.sel .shape{transform:scale(1.32);stroke:var(--red-hi);stroke-width:5}
+.star.today .halo{animation:pulse 1.8s ease-out infinite}
+.halo{fill:none;stroke:var(--red-hi);stroke-width:4;opacity:0}
+@keyframes pulse{0%{r:28px;opacity:.9}100%{r:70px;opacity:0}}
+.editing .star{cursor:grab}
+.placing svg{cursor:crosshair}
+.pop{position:absolute;z-index:5;width:270px;background:#fffaf0;color:#2a2112;border-radius:14px;padding:14px 16px 14px;box-shadow:0 14px 40px rgba(0,0,0,.45);transform:translate(-50%,calc(-100% - 22px))}
+.pop.below{transform:translate(-50%,22px)}
+.pop::after{content:"";position:absolute;left:50%;bottom:-7px;width:14px;height:14px;background:#fffaf0;transform:translateX(-50%) rotate(45deg)}
+.pop.below::after{bottom:auto;top:-7px}
+.pop-day{font-size:12px;font-weight:600;color:#b3261e;text-transform:uppercase;letter-spacing:.08em;padding-right:22px}
+.pop-addr{font-family:"Fraunces",serif;font-size:21px;font-weight:700;margin:6px 0 2px;line-height:1.15}
+.pop-city{font-size:13px;color:#6b5c40}
+.pop-host{margin-top:10px;font-size:14px;color:#2a2112}.pop-host b{color:#b3261e}
+.pop-time{margin-top:10px;font-weight:600;font-size:15px}
+.pop-note{margin-top:6px;font-size:14px;color:#4b3f2a;line-height:1.4}
+.pop a{display:inline-block;margin-top:10px;font-size:13px;color:#b3261e;font-weight:600;text-decoration:none;border-bottom:1px solid #e9a39d}
+.pop-x{position:absolute;top:8px;right:8px;border:0;background:transparent;font-size:20px;line-height:1;color:#8b7a5a;cursor:pointer;padding:4px 6px}
+h2{font-family:"Fraunces",serif;font-size:22px;margin:34px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.door{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;text-align:left;color:var(--text);font:inherit;transition:border-color .15s,transform .15s}
+.door:hover{border-color:var(--red-hi);transform:translateY(-1px)}
+.door.sel{border-color:var(--red-hi);background:#183d28}
+.door.past{opacity:.55}
+.door.today{border-color:var(--red-hi);box-shadow:0 0 0 2px rgba(255,106,94,.3)}
+.door .n{font-family:"Fraunces",serif;font-size:24px;font-weight:700;color:var(--gold);line-height:1}
+.door .d{font-size:12px;color:var(--muted);margin-top:4px}
+.door .h{font-size:12px;color:var(--muted);margin-top:2px}
+.door .s{font-size:13px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.btn{font:600 14px "Work Sans",sans-serif;border-radius:10px;padding:9px 14px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer}
+.btn:hover{border-color:var(--street-hi)}
+.btn.primary{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.primary:hover{background:#e14a41}
+.btn.small{padding:6px 10px;font-size:13px}
+.btn.on{background:#4a1714;border-color:var(--red-hi);color:#ffd2cc}
+.msg{font-size:14px;color:var(--muted)}
+.msg.err{color:var(--danger)}
+.banner{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:var(--red);color:#fff;font-weight:600;font-size:14px;border-radius:999px;padding:8px 16px;z-index:6;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.admin{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:18px}
+.admin h3{margin:0 0 12px;font-family:"Fraunces",serif;font-size:19px}
+.settings{display:grid;grid-template-columns:110px 1fr 1fr;gap:10px;margin-bottom:18px}
+.settings label,.rowhead{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+.settings .full{grid-column:1/-1}
+input,textarea{width:100%;font:14px "Work Sans",sans-serif;background:#0b2416;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+input:focus,textarea:focus{outline:none;border-color:var(--red-hi)}
+input[type=time]{color-scheme:dark}
+.rows{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:30px 70px minmax(150px,2fr) minmax(110px,1.3fr) 86px 86px minmax(130px,2fr) 104px;gap:8px;align-items:center}
+.row .num{font-family:"Fraunces",serif;font-weight:700;color:var(--gold);font-size:18px;text-align:center}
+.row .dt{font-size:12px;color:var(--muted)}
+.row.hl{background:#183d28;border-radius:10px;outline:1px solid var(--red-hi);outline-offset:3px}
+details{margin-top:16px}
+summary{cursor:pointer;color:var(--muted);font-size:14px}
+textarea{min-height:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;margin-top:10px}
+footer{margin-top:40px;color:#7f9d89;font-size:12px}
+@media (max-width:820px){
+  .row{grid-template-columns:30px 1fr 1fr;grid-template-areas:"n s s" "n h h" "d f t" "x x p"}
+  .row .num{grid-area:n}.row .dt{grid-area:d}.row .f-street{grid-area:s}.row .f-host{grid-area:h}.row .f-from{grid-area:f}.row .f-to{grid-area:t}.row .f-note{grid-area:x}.row .place{grid-area:p}
+  .row{padding:8px;border-bottom:1px solid var(--line)}
+  .settings{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .mapcard svg{min-width:820px}
+  .pop,.pop.below{position:fixed;left:12px!important;right:12px;top:auto!important;bottom:12px;width:auto;transform:none}
+  .pop::after{display:none}
+  .status{white-space:normal}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="application/json" id="advent-data">{"year": 2026, "title": "Lebendiger Adventskalender Marienthal", "intro": "Vom 1. bis 24. Dezember öffnet jeden Abend ein anderes Haus in unserer Nachbarschaft seine Tür – mit Glühwein, Punsch und manchmal kleinen Leckereien. Klick auf einen Stern, um zu sehen, wo und wann.", "city": "22043 Hamburg", "doors": [{"n": 1, "street": "Jüthornstraße 30", "host": "Familie Petersen", "from": "18:00", "to": "20:00", "note": "Auftakt mit Feuerschale", "x": 720, "y": 292}, {"n": 2, "street": "Oktaviostraße 12", "host": "Familie Jansen", "from": "18:00", "to": "20:00", "note": "", "x": 1215, "y": 380}, {"n": 3, "street": "Ernst-Albers-Straße 8", "host": "Familie Krüger", "from": "18:30", "to": "20:30", "note": "Kinderpunsch & Plätzchen", "x": 1075, "y": 265}, {"n": 4, "street": "Ahornstraße 5", "host": "Familie Hansen", "from": "18:00", "to": "20:00", "note": "", "x": 1000, "y": 565}, {"n": 5, "street": "An der Marienanlage 3", "host": "Familie Wagner", "from": "17:00", "to": "19:00", "note": "Samstag – schon etwas früher", "x": 790, "y": 594}, {"n": 6, "street": "Nöpps 14", "host": "Familie Lorenzen", "from": "17:00", "to": "19:00", "note": "Nikolaus schaut vorbei", "x": 1000, "y": 869}, {"n": 7, "street": "Kielmannseggstraße 40", "host": "Familie Brandt", "from": "18:00", "to": "20:00", "note": "", "x": 2050, "y": 450}, {"n": 8, "street": "Behrensstraße 9", "host": "Familie Vogel", "from": "18:00", "to": "20:00", "note": "Waffeln", "x": 1595, "y": 755}, {"n": 9, "street": "Luisenstraße 21", "host": "Familie Schulz", "from": "18:30", "to": "20:30", "note": "", "x": 842, "y": 845}, {"n": 10, "street": "Schatzmeisterstraße 17", "host": "Familie Albers", "from": "18:00", "to": "20:00", "note": "Bläser-Ständchen um 19 Uhr", "x": 660, "y": 450}, {"n": 11, "street": "Am Husarendenkmal 22", "host": "Familie Meyer", "from": "18:00", "to": "20:00", "note": "", "x": 560, "y": 770}, {"n": 12, "street": "Oktaviostraße 55", "host": "Familie Kühl", "from": "17:00", "to": "19:00", "note": "", "x": 1800, "y": 657}, {"n": 13, "street": "Ernst-Albers-Straße 41", "host": "Familie Ohlsen", "from": "17:00", "to": "19:00", "note": "Bratäpfel", "x": 1230, "y": 618}, {"n": 14, "street": "Nöpps 37", "host": "Familie Frahm", "from": "18:00", "to": "20:00", "note": "", "x": 1465, "y": 662}, {"n": 15, "street": "Kurvenstraße 11", "host": "Familie Thiessen", "from": "18:00", "to": "20:00", "note": "Lebkuchen selbstgebacken", "x": 175, "y": 680}, {"n": 16, "street": "Jüthornstraße 75", "host": "Familie Wulf", "from": "18:30", "to": "20:30", "note": "", "x": 1025, "y": 185}, {"n": 17, "street": "Kielmannseggstraße 12", "host": "Familie Dreyer", "from": "18:00", "to": "20:00", "note": "", "x": 1800, "y": 810}, {"n": 18, "street": "Stoltenstraße 4", "host": "Familie Hinz", "from": "18:00", "to": "20:00", "note": "Feuerkorb im Vorgarten", "x": 2220, "y": 885}, {"n": 19, "street": "Zirpenweg 6", "host": "Familie Paulsen", "from": "17:00", "to": "19:00", "note": "", "x": 2370, "y": 902}, {"n": 20, "street": "Ahornstraße 28", "host": "Familie Stamer", "from": "17:00", "to": "19:00", "note": "Weihnachtslieder zum Mitsingen", "x": 1245, "y": 457}, {"n": 21, "street": "Rodigallee 190", "host": "Familie Möller", "from": "18:00", "to": "20:00", "note": "", "x": 2250, "y": 60}, {"n": 22, "street": "Oktaviostraße 90", "host": "Familie Claußen", "from": "18:00", "to": "20:00", "note": "", "x": 2340, "y": 765}, {"n": 23, "street": "Husarenhof 3", "host": "Familie Rathje", "from": "18:00", "to": "20:00", "note": "Punsch ohne Alkohol für alle", "x": 240, "y": 1000}, {"n": 24, "street": "Jüthornkamp 8", "host": "Familie Schröder", "from": "15:30", "to": "16:30", "note": "Heiligabend: kurzes Weihnachtssingen vor der Bescherung", "x": 320, "y": 220}]}</script>
+<script id="app">
+(function(){
+"use strict";
+var W=2462,H=1255;
+var data=JSON.parse(document.getElementById("advent-data").textContent);
+var state={sel:null,editing:false,draft:null,placing:null,canEdit:false,msg:"",msgErr:false,hl:null};
+var root=document.getElementById("root");
+
+/* ---------- helpers ---------- */
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function cur(){return state.editing?state.draft:data;}
+function door(n){var d=cur().doors;for(var i=0;i<d.length;i++)if(d[i].n===n)return d[i];return null;}
+function dateOf(n){return new Date(cur().year,11,n);}
+function fmtDate(n,opt){return dateOf(n).toLocaleDateString("de-DE",opt||{weekday:"long",day:"numeric",month:"long"});}
+function fmtTime(t){return (t||"").replace(":",".");}
+function timeText(d){if(d.from&&d.to)return "von "+fmtTime(d.from)+" bis "+fmtTime(d.to)+" Uhr";if(d.from)return "ab "+fmtTime(d.from)+" Uhr";return "Uhrzeit folgt";}
+function today(){var t=new Date();return new Date(t.getFullYear(),t.getMonth(),t.getDate());}
+function dayStatus(n){var diff=(dateOf(n)-today())/864e5;return diff<0?"past":diff===0?"today":"future";}
+function statusText(){
+  var y=cur().year,t=today(),start=new Date(y,11,1),end=new Date(y,11,24);
+  if(t<start){var dd=Math.round((start-t)/864e5);return dd===1?"Morgen öffnet das erste Türchen":"Noch "+dd+" Tage bis zum ersten Türchen";}
+  if(t>end)return "Der Adventskalender "+y+" ist vorbei – danke an alle Gastgeber!";
+  var n=t.getDate(),d=door(n);return "Heute: Türchen "+n+(d&&d.street?" · "+d.street:"");
+}
+function starPath(R,r){var p=[];for(var i=0;i<10;i++){var a=-Math.PI/2+i*Math.PI/5,rad=i%2?r:R;p.push((Math.cos(a)*rad).toFixed(1)+","+(Math.sin(a)*rad).toFixed(1));}return p.join(" ");}
+var STAR=starPath(36,16);
+function mapsLink(d){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(d.street+", "+cur().city);}
+
+/* ---------- Karte (vereinfacht nachgezeichnet nach dem realen Straßenverlauf) ---------- */
+var MAJOR=[
+ {name:"Ring 2",pts:[[40,120],[130,270],[230,345],[330,440],[390,570],[470,760],[560,960],[660,1255]],lab:[[4,.5]],w:30,fill:"#6d5a3c"},
+ {name:"Jüthornstraße",pts:[[0,625],[140,500],[330,445],[430,395],[600,330],[900,230],[1150,140],[1330,62],[1500,55],[1960,85]],lab:[[4,.5],[6,.55],[8,.5]],w:24,fill:"#4c735d"},
+ {name:"Rodigallee",pts:[[1960,85],[2462,40]],lab:[[0,.3]],w:24,fill:"#4c735d"},
+ {name:"A 24",pts:[[540,1255],[1300,1120],[2000,1010],[2462,930]],lab:[],w:34,fill:"#6d5a3c",motorway:true}
+];
+var STREETS=[
+ {name:"Kurvenstraße",pts:[[25,230],[110,440],[160,560],[190,800]],lab:[[2,.5]]},
+ {name:"Schatzmeisterstraße",pts:[[470,0],[600,320],[715,570]],lab:[[1,.45]]},
+ {name:"Jüthornkamp",pts:[[290,110],[330,250],[380,350]],lab:[[0,.45]]},
+ {name:"Ziesenißstraße",pts:[[180,165],[420,0]],lab:[[0,.45]]},
+ {name:"An d. Marienanlage",pts:[[715,570],[870,620]],lab:[[0,.5]]},
+ {name:"",pts:[[715,570],[660,725],[815,780],[870,620]],lab:[]},
+ {name:"Ahornstraße",pts:[[870,620],[1170,490],[1320,425]],lab:[[0,.55]]},
+ {name:"Am Husarendenkmal",pts:[[0,905],[200,880],[470,810],[660,725]],lab:[[2,.45],[0,.55]]},
+ {name:"Luisenstraße",pts:[[815,780],[870,910],[980,1150]],lab:[[1,.6]]},
+ {name:"Nöpps",pts:[[600,1045],[880,920],[1290,745],[1640,580]],lab:[[0,.45],[2,.6]]},
+ {name:"Oktaviostraße",pts:[[1110,335],[1320,425],[1640,580],[1960,735],[2200,815],[2300,805],[2462,715]],lab:[[1,.45],[3,.45],[5,.5]]},
+ {name:"Ernst-Albers-Straße",pts:[[1040,195],[1110,335],[1170,490],[1290,745],[1400,990]],lab:[[3,.45]]},
+ {name:"Kielmannseggstraße",pts:[[2000,90],[1995,230],[2060,480],[2020,620],[1960,735],[1650,880],[1420,990],[1300,1015],[1200,1010],[1180,950],[1150,810]],lab:[[2,.4],[5,.5],[9,.5]]},
+ {name:"Behrensstraße",pts:[[1540,630],[1650,880]],lab:[[0,.45]]},
+ {name:"",pts:[[1580,920],[1640,1030]],lab:[]},
+ {name:"Stoltenstraße",pts:[[2200,815],[2240,960],[2290,1255]],lab:[[1,.55]]},
+ {name:"Zirpenweg",pts:[[2240,960],[2462,860]],lab:[[0,.6]]},
+ {name:"Husarenhof",pts:[[230,890],[250,1100],[390,1175]],lab:[[0,.5]]},
+ {name:"Derbyweg",pts:[[880,1255],[1500,1155],[1900,1085],[2462,1040]],lab:[[2,.5]]},
+ {name:"",pts:[[420,400],[470,520],[560,505]],lab:[]},
+ {name:"",pts:[[0,770],[170,745],[300,740]],lab:[]},
+ {name:"",pts:[[1180,170],[1230,330]],lab:[]}
+];
+var PARKS=[
+ [[600,0],[1335,0],[1330,62],[1150,140],[900,230],[860,238],[640,190]],
+ [[1175,175],[1330,98],[1960,100],[1975,300],[2462,170],[2462,690],[2300,700],[2180,650],[1990,725],[1700,505],[1620,335],[1380,292],[1185,255]],
+ [[715,570],[870,620],[815,780],[660,725]],
+ [[990,930],[1100,890],[1150,1000],[1060,1065],[985,1010]]
+];
+function line(p){return p.map(function(q){return q.join(",");}).join(" ");}
+function labelsFor(st,size,color){
+  var out="";
+  st.lab.forEach(function(L){
+    var a=st.pts[L[0]],b=st.pts[L[0]+1],t=L[1];
+    var x=a[0]+(b[0]-a[0])*t,y=a[1]+(b[1]-a[1])*t;
+    var ang=Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI;
+    if(ang>90)ang-=180;if(ang<-90)ang+=180;
+    out+='<text x="'+x.toFixed(0)+'" y="'+y.toFixed(0)+'" transform="rotate('+ang.toFixed(1)+' '+x.toFixed(0)+' '+y.toFixed(0)+')" font-size="'+size+'" fill="'+color+'" text-anchor="middle" dominant-baseline="central" stroke="#123323" stroke-width="6" paint-order="stroke" font-weight="500">'+esc(st.name)+'</text>';
+  });
+  return out;
+}
+function baseMap(){
+  var s="";
+  s+='<defs><filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+     '<pattern id="trees" width="44" height="44" patternUnits="userSpaceOnUse"><circle cx="12" cy="14" r="7" fill="#235a3b"/><circle cx="33" cy="32" r="6" fill="#205236"/></pattern></defs>';
+  s+='<rect width="'+W+'" height="'+H+'" fill="#123323"/>';
+  PARKS.forEach(function(p){s+='<polygon points="'+line(p)+'" fill="#1b4a30"/><polygon points="'+line(p)+'" fill="url(#trees)" opacity=".7"/>';});
+  /* Wasser */
+  s+='<ellipse cx="770" cy="688" rx="46" ry="28" fill="#3c7a8c"/><ellipse cx="1735" cy="242" rx="46" ry="30" fill="#3c7a8c"/><ellipse cx="2462" cy="300" rx="34" ry="52" fill="#3c7a8c"/>';
+  s+='<path d="M830 0 C 850 120, 880 260, 950 500 S 1080 700, 1088 820 S 1092 1100, 1100 1255" fill="none" stroke="#3c7a8c" stroke-width="5"/>';
+  /* Nebenstraßen */
+  STREETS.forEach(function(st){s+='<polyline points="'+line(st.pts)+'" fill="none" stroke="#0c2617" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>';});
+  STREETS.forEach(function(st){s+='<polyline points="'+line(st.pts)+'" fill="none" stroke="#3a6650" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>';});
+  /* Hauptstraßen */
+  MAJOR.forEach(function(st){s+='<polyline points="'+line(st.pts)+'" fill="none" stroke="#0c2617" stroke-width="'+(st.w+8)+'" stroke-linecap="round" stroke-linejoin="round"/>';});
+  MAJOR.forEach(function(st){s+='<polyline points="'+line(st.pts)+'" fill="none" stroke="'+st.fill+'" stroke-width="'+st.w+'" stroke-linecap="round" stroke-linejoin="round"/>';
+    if(st.motorway)s+='<polyline points="'+line(st.pts)+'" fill="none" stroke="#123323" stroke-width="3" stroke-dasharray="26 20"/>';});
+  /* Labels */
+  s+='<text x="900" y="95" font-size="24" font-style="italic" fill="#8fc4a2" text-anchor="middle">Wandsbeker Gehölz</text>';
+  s+='<text x="2220" y="470" font-size="24" font-style="italic" fill="#8fc4a2" text-anchor="middle">Wandsbeker Gehölz</text>';
+  s+='<text x="765" y="745" font-size="19" font-style="italic" fill="#8fc4a2" text-anchor="middle">Marienanlage</text>';
+  s+='<text x="1060" y="440" font-size="17" font-style="italic" fill="#76aebf" transform="rotate(68 1060 440)">Gehölzgraben</text>';
+  STREETS.forEach(function(st){if(st.name)s+=labelsFor(st,21,"#c9dccf");});
+  MAJOR.forEach(function(st){s+=labelsFor(st,23,"#f0e6d2");});
+  /* A24-Schilder */
+  [[900,1185],[1640,1066],[2250,968]].forEach(function(p){s+='<g transform="translate('+p[0]+','+p[1]+')"><rect x="-26" y="-15" width="52" height="30" rx="7" fill="#2b5aa8" stroke="#fff" stroke-width="2.5"/><text text-anchor="middle" dominant-baseline="central" font-size="19" font-weight="700" fill="#fff">A24</text></g>';});
+  /* Kompass */
+  s+='<g transform="translate(2390,1180)"><circle r="38" fill="#0f2c1d" stroke="#2f5c42" stroke-width="2"/><path d="M0 -26 L10 8 L0 0 L-10 8Z" fill="#d23c34"/><text y="26" text-anchor="middle" font-size="17" fill="#c9dccf">N</text></g>';
+  return s;
+}
+var BASE=baseMap();
+
+
+function starsSVG(){
+  var s="";
+  cur().doors.slice().sort(function(a,b){return (state.sel===a.n)-(state.sel===b.n);}).forEach(function(d){
+    var st=dayStatus(d.n),cls="star "+st+(state.sel===d.n?" sel":"");
+    s+='<g class="'+cls+'" data-n="'+d.n+'" transform="translate('+d.x+','+d.y+')" tabindex="0" role="button" aria-label="Türchen '+d.n+': '+esc(d.street)+'">'+
+       '<circle class="halo" r="28"/><polygon class="shape" points="'+STAR+'"/><text y="3">'+d.n+'</text></g>';
+  });
+  return s;
+}
+
+/* ---------- render ---------- */
+function render(){
+  var c=cur(),h="";
+  h+='<div class="wrap'+(state.editing?" editing":"")+'">';
+  h+='<header><div><div class="eyebrow">Advent '+esc(c.year)+' · Hamburg-Marienthal</div><h1>'+esc(c.title)+'</h1><p class="intro">'+esc(c.intro)+'</p></div><div class="status">'+esc(statusText())+'</div></header>';
+  h+='<div class="mapcard'+(state.placing?" placing":"")+'" id="mapcard">';
+  if(state.placing)h+='<div class="banner">Klicke auf die Karte, um Türchen '+state.placing+' zu platzieren</div>';
+  h+='<div class="mapscroll"><svg id="map" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'+BASE+'<g id="stars">'+starsSVG()+'</g></svg></div>';
+  h+='<div class="mapnote">Straßenverlauf vereinfacht dargestellt</div>';
+  h+=popupHTML();
+  h+='</div>';
+  if(state.editing)h+=adminHTML();
+  else{
+    h+='<h2>Alle 24 Türchen</h2><div class="grid">';
+    c.doors.forEach(function(d){var st=dayStatus(d.n);
+      h+='<button class="door '+st+(state.sel===d.n?" sel":"")+'" data-door="'+d.n+'"><div class="n">'+d.n+'</div><div class="d">'+esc(fmtDate(d.n,{weekday:"short",day:"numeric",month:"short"}))+' · '+esc(fmtTime(d.from))+'</div><div class="s">'+esc(d.street||"–")+'</div>'+(d.host?'<div class="h">'+esc(d.host)+'</div>':"")+'</button>';});
+    h+='</div>';
+    if(state.canEdit)h+='<div class="toolbar"><button class="btn" data-act="edit">Adressen bearbeiten</button>'+msgHTML()+'</div>';
+  }
+  h+='<footer>Lebendiger Adventskalender · Nachbarschaft Hamburg-Marienthal</footer></div>';
+  root.innerHTML=h;
+  if(state.hl){var r=root.querySelector('.row[data-row="'+state.hl+'"]');if(r)r.scrollIntoView({block:"nearest",behavior:"smooth"});state.hl=null;}
+}
+function msgHTML(){return state.msg?'<span class="msg'+(state.msgErr?" err":"")+'">'+esc(state.msg)+'</span>':"";}
+function popupHTML(){
+  if(state.sel==null||state.placing)return "";
+  var d=door(state.sel);if(!d)return "";
+  var below=d.y<470,left=Math.min(Math.max(d.x/W*100,14),86),top=d.y/H*100;
+  return '<div class="pop'+(below?" below":"")+'" style="left:'+left+'%;top:'+top+'%">'+
+    '<button class="pop-x" data-act="close" aria-label="Schließen">×</button>'+
+    '<div class="pop-day">Türchen '+d.n+' · '+esc(fmtDate(d.n))+'</div>'+
+    '<div class="pop-addr">'+esc(d.street||"Adresse folgt")+'</div><div class="pop-city">'+esc(cur().city)+'</div>'+
+    (d.host?'<div class="pop-host">bei <b>'+esc(d.host)+'</b></div>':"")+
+    '<div class="pop-time">'+esc(timeText(d))+'</div>'+
+    (d.note?'<div class="pop-note">'+esc(d.note)+'</div>':"")+
+    (d.street?'<a href="'+esc(mapsLink(d))+'" target="_blank" rel="noopener">In Google Maps öffnen ↗</a>':"")+
+  '</div>';
+}
+function adminHTML(){
+  var c=state.draft,h='<div class="admin"><h3>Adressen verwalten</h3>';
+  h+='<div class="settings"><div><label>Jahr</label><input type="number" data-s="year" value="'+esc(c.year)+'"></div><div><label>Titel</label><input data-s="title" value="'+esc(c.title)+'"></div><div><label>PLZ / Ort</label><input data-s="city" value="'+esc(c.city)+'"></div><div class="full"><label>Einleitungstext</label><input data-s="intro" value="'+esc(c.intro)+'"></div></div>';
+  h+='<div class="row" style="margin-bottom:2px"><span class="rowhead">Nr.</span><span class="rowhead">Datum</span><span class="rowhead">Straße & Hausnummer</span><span class="rowhead">Gastgeber</span><span class="rowhead">Von</span><span class="rowhead">Bis</span><span class="rowhead">Hinweis (optional)</span><span class="rowhead">Position</span></div>';
+  h+='<div class="rows">';
+  c.doors.forEach(function(d){
+    h+='<div class="row'+(state.sel===d.n?" hl":"")+'" data-row="'+d.n+'"><span class="num">'+d.n+'</span><span class="dt">'+esc(fmtDate(d.n,{weekday:"short",day:"numeric",month:"numeric"}))+'</span>'+
+      '<input class="f-street" data-n="'+d.n+'" data-f="street" value="'+esc(d.street)+'" placeholder="z. B. Rauchstraße 12">'+
+      '<input class="f-host" data-n="'+d.n+'" data-f="host" value="'+esc(d.host||"")+'" placeholder="z. B. Familie Müller">'+
+      '<input class="f-from" type="time" data-n="'+d.n+'" data-f="from" value="'+esc(d.from)+'">'+
+      '<input class="f-to" type="time" data-n="'+d.n+'" data-f="to" value="'+esc(d.to)+'">'+
+      '<input class="f-note" data-n="'+d.n+'" data-f="note" value="'+esc(d.note)+'" placeholder="z. B. Kinderpunsch">'+
+      '<button class="btn small place'+(state.placing===d.n?" on":"")+'" data-place="'+d.n+'">'+(state.placing===d.n?"Klick auf Karte…":"Auf Karte setzen")+'</button></div>';
+  });
+  h+='</div>';
+  h+='<p class="msg" style="margin-top:12px">Tipp: Im Bearbeitungsmodus kannst du die Sterne auch direkt auf der Karte verschieben.</p>';
+  h+='<div class="toolbar"><button class="btn primary" data-act="save">Speichern & veröffentlichen</button><button class="btn" data-act="cancel">Abbrechen</button><button class="btn" data-act="copy">Als JSON kopieren</button>'+msgHTML()+'</div>';
+  h+='<details><summary>Daten als JSON einfügen (z. B. aus einer Tabelle)</summary><textarea id="jsonin" placeholder="JSON hier einfügen …"></textarea><div class="toolbar"><button class="btn small" data-act="import">Übernehmen</button></div></details>';
+  h+='</div>';
+  return h;
+}
+function setMsg(t,err){state.msg=t;state.msgErr=!!err;}
+
+/* ---------- events ---------- */
+root.addEventListener("click",function(e){
+  var t=e.target.closest("[data-act],[data-door],[data-place]");
+  if(t){
+    if(t.dataset.door){state.sel=+t.dataset.door;render();var m=document.getElementById("mapcard");if(m)m.scrollIntoView({behavior:"smooth",block:"start"});return;}
+    if(t.dataset.place){var n=+t.dataset.place;state.placing=state.placing===n?null:n;state.sel=n;render();return;}
+    var a=t.dataset.act;
+    if(a==="close"){state.sel=null;render();}
+    else if(a==="edit"){state.draft=JSON.parse(JSON.stringify(data));state.editing=true;setMsg("");render();}
+    else if(a==="cancel"){state.editing=false;state.draft=null;state.placing=null;setMsg("");render();}
+    else if(a==="save")save();
+    else if(a==="copy")copyJSON();
+    else if(a==="import")importJSON();
+    return;
+  }
+  if(e.target.closest("#map")&&!e.target.closest(".star")){
+    if(state.placing){var p=svgPoint(e);var d=door(state.placing);d.x=Math.round(p.x);d.y=Math.round(p.y);state.sel=state.placing;state.placing=null;render();}
+    else if(state.sel!=null&&!dragMoved){state.sel=null;render();}
+  }
+});
+root.addEventListener("keydown",function(e){
+  var g=e.target.closest&&e.target.closest(".star");
+  if(g&&(e.key==="Enter"||e.key===" ")){e.preventDefault();selectStar(+g.dataset.n);}
+  if(e.key==="Escape"&&state.sel!=null){state.sel=null;render();}
+});
+root.addEventListener("input",function(e){
+  var el=e.target;if(!state.editing)return;
+  if(el.dataset.s){var v=el.value;state.draft[el.dataset.s]=el.dataset.s==="year"?(parseInt(v,10)||data.year):v;}
+  else if(el.dataset.f){var d=door(+el.dataset.n);if(d)d[el.dataset.f]=el.value;}
+});
+function selectStar(n){state.sel=n;if(state.editing)state.hl=n;render();}
+
+/* drag + click on stars */
+var drag=null,dragMoved=false;
+function svgPoint(e){var svg=document.getElementById("map"),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;var p=pt.matrixTransform(svg.getScreenCTM().inverse());return {x:Math.max(10,Math.min(W-10,p.x)),y:Math.max(10,Math.min(H-10,p.y))};}
+root.addEventListener("pointerdown",function(e){
+  var g=e.target.closest(".star");if(!g)return;
+  dragMoved=false;drag={n:+g.dataset.n,g:g,sx:e.clientX,sy:e.clientY};
+  if(state.editing){try{g.setPointerCapture(e.pointerId);}catch(_){}}
+});
+root.addEventListener("pointermove",function(e){
+  if(!drag||!state.editing)return;
+  if(Math.abs(e.clientX-drag.sx)+Math.abs(e.clientY-drag.sy)>4)dragMoved=true;
+  if(dragMoved){var p=svgPoint(e);drag.g.setAttribute("transform","translate("+p.x.toFixed(0)+","+p.y.toFixed(0)+")");drag.p=p;}
+});
+root.addEventListener("pointerup",function(){
+  if(!drag)return;var dr=drag;drag=null;
+  if(dragMoved&&state.editing&&dr.p){var d=door(dr.n);d.x=Math.round(dr.p.x);d.y=Math.round(dr.p.y);state.sel=dr.n;render();setTimeout(function(){dragMoved=false;},0);return;}
+  if(state.placing)return;
+  selectStar(dr.n);
+});
+
+/* ---------- import / export ---------- */
+function validate(o){
+  if(!o||!Array.isArray(o.doors))throw new Error("Es fehlt die Liste „doors“.");
+  var out=JSON.parse(JSON.stringify(state.draft||data));
+  ["year","title","intro","city"].forEach(function(k){if(o[k]!=null)out[k]=k==="year"?parseInt(o[k],10)||out.year:String(o[k]);});
+  o.doors.forEach(function(d){var n=parseInt(d.n,10);if(!(n>=1&&n<=24))return;var t=out.doors[n-1];
+    ["street","host","from","to","note"].forEach(function(k){if(d[k]!=null)t[k]=String(d[k]);});
+    if(isFinite(d.x)&&isFinite(d.y)){t.x=+d.x;t.y=+d.y;}});
+  return out;
+}
+function importJSON(){
+  var ta=document.getElementById("jsonin");
+  try{state.draft=validate(JSON.parse(ta.value));setMsg("Daten übernommen – noch nicht gespeichert.");}catch(err){setMsg("JSON konnte nicht gelesen werden: "+err.message,true);}
+  render();
+}
+function copyJSON(){
+  var txt=JSON.stringify(state.draft||data,null,2);
+  try{navigator.clipboard.writeText(txt).then(function(){setMsg("JSON in die Zwischenablage kopiert.");render();},function(){fallback();});}catch(_){fallback();}
+  function fallback(){setMsg("Kopieren nicht möglich – JSON steht unten im Feld.");render();var d=root.querySelector("details");if(d)d.open=true;var ta=document.getElementById("jsonin");if(ta){ta.value=txt;ta.select();}}
+}
+
+/* ---------- save: regenerate this page with new data and publish ---------- */
+function buildDoc(obj){
+  var css=document.getElementById("app-style").textContent;
+  var js=document.getElementById("app").textContent;
+  var json=JSON.stringify(obj).replace(/</g,"\\u003c");
+  var S="<"+"script",E="<"+"/script>";
+  return "<!DOCTYPE html>\n<html lang=\"de\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>Lebendiger Adventskalender Marienthal</title>\n"+
+    "<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Work+Sans:wght@400;500;600&display=swap\">\n"+
+    "<style id=\"app-style\">"+css+"</style>\n</head>\n<body>\n<div id=\"root\"></div>\n"+
+    S+" type=\"application/json\" id=\"advent-data\">"+json+E+"\n"+S+" id=\"app\">"+js+E+"\n</body>\n</html>\n";
+}
+function save(){
+  var d=state.draft;
+  var missing=d.doors.filter(function(x){return !x.street.trim();}).length;
+  setMsg("Speichere …");render();
+  Promise.resolve(window.claude&&window.claude.use?window.claude.use("artifact"):null).then(function(art){
+    if(!art){setMsg("Speichern ist hier nicht verfügbar. Nutze „Als JSON kopieren“ und schick mir die Daten.",true);render();return;}
+    return art.publish(buildDoc(d)).then(function(){
+      data=d;state.editing=false;state.draft=null;setMsg("Gespeichert"+(missing?" ("+missing+" Türchen ohne Adresse)":"")+".");render();
+    });
+  }).catch(function(err){
+    var m=String(err&&(err.code||err.message)||err);
+    if(/not_granted|not_writer/.test(m))setMsg("Du hast keine Berechtigung, diese Seite zu ändern.",true);
+    else if(/conflict/.test(m))setMsg("Jemand anderes hat gerade gespeichert – die Seite lädt neu.",true);
+    else setMsg("Speichern fehlgeschlagen: "+m,true);
+    render();
+  });
+}
+
+/* ---------- boot ---------- */
+render();
+if(location.hash==="#admin"){state.canEdit=true;render();}
+if(window.claude&&window.claude.use){
+  window.claude.use("user").then(function(u){
+    if(!u)return null;return Promise.resolve(u.canEdit()).then(function(ok){if(ok){state.canEdit=true;if(!state.editing)render();}});
+  }).catch(function(){});
+}
+})();
+</script>
+</body>
+</html>
