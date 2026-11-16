@@ -116,6 +116,32 @@ footer{margin-top:40px;color:#7f9d89;font-size:12px}
   .pop::after{display:none}
   .status{white-space:normal}
 }
+
+/* Weihnachts-Deko */
+.garland{display:block;width:calc(100% + 40px);height:auto;margin:-28px -20px 2px;overflow:visible}
+.bauble{transform-box:fill-box;transform-origin:50% 0;animation:swing 3.4s ease-in-out infinite alternate}
+@keyframes swing{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
+.flake-ico{display:inline-block;color:#eef4ee;animation:spin 9s linear infinite}
+.flake-ico.d2{animation-duration:13s;animation-direction:reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hdr-side{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.snow-toggle{font:500 12px "Work Sans",sans-serif;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
+.snow-toggle:hover{color:var(--text);border-color:var(--street-hi)}
+#snow{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:40}
+.star .shape{animation:twinkle 3s ease-in-out infinite;animation-delay:calc(var(--tw,0s) * -1)}
+@keyframes twinkle{0%,100%{opacity:1}50%{opacity:.78}}
+.mapcard{box-shadow:0 20px 60px rgba(0,0,0,.35),inset 0 0 60px rgba(220,240,230,.05)}
+.door:hover .n{animation:jiggle .45s ease}
+@keyframes jiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(8deg)}}
+.door .n{display:inline-block}
+.door.today{position:relative;overflow:hidden}
+.door.today::after{content:"heute";position:absolute;top:10px;right:-24px;transform:rotate(35deg);background:var(--red);color:#fff;font-size:11px;font-weight:600;padding:2px 28px}
+.trees{display:block;width:100%;height:auto;margin-top:46px}
+.tl{animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+footer{margin-top:6px!important;text-align:center}
+@media (prefers-reduced-motion: reduce){.bauble,.flake-ico,.star .shape,.tl,.door:hover .n{animation:none}}
+@media (max-width:640px){.garland{margin-top:-20px}.hdr-side{align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -316,7 +342,7 @@ function starsSVG(){
   var s="";
   cur().doors.filter(function(d){return state.editing||d.street;}).slice().sort(function(a,b){return (state.sel===a.n)-(state.sel===b.n);}).forEach(function(d){
     var st=dayStatus(d.n),cls="star "+st+(state.sel===d.n?" sel":"");
-    s+='<g class="'+cls+'" data-n="'+d.n+'" transform="translate('+d.x+','+d.y+')" tabindex="0" role="button" aria-label="Türchen '+d.n+': '+esc(d.street)+'">'+
+    s+='<g class="'+cls+'" data-n="'+d.n+'" transform="translate('+d.x+','+d.y+')" style="--tw:'+((d.n*0.53)%3).toFixed(2)+'s" tabindex="0" role="button" aria-label="Türchen '+d.n+': '+esc(d.street)+'">'+
        '<circle class="halo" r="28"/><polygon class="shape" points="'+STAR+'"/><text y="3">'+d.n+'</text></g>';
   });
   return s;
@@ -326,7 +352,8 @@ function starsSVG(){
 function render(){
   var c=cur(),h="";
   h+='<div class="wrap'+(state.editing?" editing":"")+'">';
-  h+='<header><div><div class="eyebrow">Advent '+esc(c.year)+' · Hamburg-Marienthal</div><h1>'+esc(c.title)+'</h1><p class="intro">'+esc(c.intro)+'</p></div><div class="status">'+esc(statusText())+'</div></header>';
+  h+=GARLAND;
+  h+='<header><div><div class="eyebrow"><span class="flake-ico">❄</span> Advent '+esc(c.year)+' · Hamburg-Marienthal <span class="flake-ico d2">❄</span></div><h1>'+esc(c.title)+'</h1><p class="intro">'+esc(c.intro)+'</p></div><div class="hdr-side"><div class="status">'+esc(statusText())+'</div><button class="snow-toggle" data-act="snow" aria-pressed="'+(snowOn?"true":"false")+'">'+(snowOn?"❄ Schnee an":"❄ Schnee aus")+'</button></div></header>';
   h+='<div class="mapcard'+(state.placing?" placing":"")+'" id="mapcard">';
   if(state.placing)h+='<div class="banner">Klicke auf die Karte, um Türchen '+state.placing+' zu platzieren</div>';
   h+='<div class="mapscroll"><svg id="map" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'+BASE+'<g id="stars">'+starsSVG()+'</g></svg></div>';
@@ -346,8 +373,10 @@ function render(){
     h+='</div>';
     if(state.canEdit)h+='<div class="toolbar"><button class="btn" data-act="edit">Adressen bearbeiten</button>'+msgHTML()+'</div>';
   }
-  h+='<footer>Lebendiger Adventskalender · Nachbarschaft Hamburg-Marienthal</footer></div>';
+  h+=TREES+'<footer>Frohe Adventszeit! · Lebendiger Adventskalender · Nachbarschaft Hamburg-Marienthal</footer></div>';
+  var osc=root.querySelector(".mapscroll"),sl=osc?osc.scrollLeft:0;
   root.innerHTML=h;
+  var nsc=root.querySelector(".mapscroll");if(nsc&&sl)nsc.scrollLeft=sl;
   if(state.hl){var r=root.querySelector('.row[data-row="'+state.hl+'"]');if(r)r.scrollIntoView({block:"nearest",behavior:"smooth"});state.hl=null;}
 }
 function msgHTML(){return state.msg?'<span class="msg'+(state.msgErr?" err":"")+'">'+esc(state.msg)+'</span>':"";}
@@ -530,8 +559,69 @@ function openApply(n){
 function closeApply(){var m=document.getElementById("apply-modal");if(m)m.remove();}
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closeApply();});
 
+
+/* ---------- Weihnachts-Deko ---------- */
+var GARLAND=(function(){
+  var cols=[["#d23c34","#ff8a7f"],["#f5c451","#fff0b8"],["#eef4ee","#ffffff"],["#2f8a5a","#8fe0b0"]];
+  var s='<svg class="garland" viewBox="0 0 1120 130" aria-hidden="true">';
+  var d="M0 10";for(var k=0;k<8;k++)d+=" Q "+(70+140*k)+" 66 "+(140+140*k)+" 10";
+  s+='<path d="'+d+'" fill="none" stroke="#1f5a3a" stroke-width="9" stroke-linecap="round"/>';
+  s+='<path d="'+d+'" fill="none" stroke="#3f8a5c" stroke-width="15" stroke-dasharray="1.5 6" stroke-linecap="round"/>';
+  for(var i=0;i<8;i++){
+    var x=70+140*i,y=38,L=[14,30,20,36,18,28,12,32][i],c=cols[i%4],cy=y+L+15;
+    s+='<g class="bauble" style="animation-delay:-'+(i*0.45).toFixed(2)+'s"><line x1="'+x+'" y1="'+y+'" x2="'+x+'" y2="'+(y+L)+'" stroke="#c9b07a" stroke-width="1.5"/>'+
+       '<rect x="'+(x-5)+'" y="'+(y+L-1)+'" width="10" height="7" rx="2" fill="#c9a24a"/>'+
+       '<circle cx="'+x+'" cy="'+cy+'" r="15" fill="'+c[0]+'"/>'+
+       '<path d="M'+(x-15)+' '+cy+' Q '+x+' '+(cy+7)+' '+(x+15)+' '+cy+'" stroke="rgba(255,255,255,.35)" stroke-width="2" fill="none"/>'+
+       '<ellipse cx="'+(x-5)+'" cy="'+(cy-6)+'" rx="4" ry="6" fill="'+c[1]+'" opacity=".7" transform="rotate(-30 '+(x-5)+' '+(cy-6)+')"/></g>';
+  }
+  for(var j=1;j<8;j+=2){var bx=140*j;
+    s+='<g class="bow" transform="translate('+bx+',12)"><path d="M0 0 L-16 -9 L-16 9 Z M0 0 L16 -9 L16 9 Z" fill="#d23c34"/><path d="M0 0 L-7 16 M0 0 L7 16" stroke="#d23c34" stroke-width="4" stroke-linecap="round"/><circle r="4.5" fill="#f5c451"/></g>';}
+  return s+'</svg>';
+})();
+var TREES=(function(){
+  var s='<svg class="trees" viewBox="0 0 1120 120" preserveAspectRatio="xMidYMax meet" aria-hidden="true">';
+  s+='<path d="M0 104 Q 140 84 280 100 T 560 98 T 840 100 T 1120 96 L1120 120 L0 120 Z" fill="#dfeee5" opacity=".16"/>';
+  var xs=[40,120,205,330,470,610,760,880,990,1075],hs=[70,95,60,85,100,75,92,62,88,70],lc=["#f5c451","#ff6a5e","#eef4ee"];
+  xs.forEach(function(x,i){var h=hs[i],w=h*.5,b=102;
+    s+='<rect x="'+(x-3)+'" y="'+(b-6)+'" width="6" height="8" fill="#4a3624"/>';
+    for(var t=0;t<3;t++){var ty=b-6-t*h*.27,tw=w*(1-t*.25);
+      s+='<path d="M'+(x-tw/2)+' '+ty+' L'+x+' '+(ty-h*.42)+' L'+(x+tw/2)+' '+ty+' Z" fill="'+(t%2?"#2a6b45":"#245c3c")+'"/>';
+      s+='<path d="M'+(x-tw/4)+' '+(ty-h*.21)+' L'+x+' '+(ty-h*.42)+' L'+(x+tw/4)+' '+(ty-h*.21)+' Z" fill="#eef4ee" opacity=".55"/>';
+      s+='<circle class="tl" cx="'+(x-tw/3+((i+t)%3)*tw/3)+'" cy="'+(ty-4)+'" r="2.6" fill="'+lc[(i+t)%3]+'" style="animation-delay:-'+(((i*3+t)*0.37)%2).toFixed(2)+'s"/>';}
+    s+='<path d="M'+x+' '+(b-6-h*.96)+' l2.4 5 5.4 .5 -4 3.6 1.2 5.3 -5 -2.8 -5 2.8 1.2 -5.3 -4 -3.6 5.4 -.5Z" fill="#f5c451"/>';
+  });
+  return s+'</svg>';
+})();
+var snowOn=true;
+try{var sv=localStorage.getItem("advent-snow");if(sv!==null)snowOn=sv==="1";}catch(_){}
+try{if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches&&localStorage.getItem("advent-snow")===null)snowOn=false;}catch(_){}
+var snow=(function(){
+  var cv=document.createElement("canvas");cv.id="snow";cv.setAttribute("aria-hidden","true");document.body.appendChild(cv);
+  var ctx=cv.getContext("2d"),fl=[],W0=0,H0=0,dpr=1,raf=0,t0=0;
+  function size(){dpr=Math.min(window.devicePixelRatio||1,2);W0=innerWidth;H0=innerHeight;cv.width=W0*dpr;cv.height=H0*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    var n=Math.min(130,Math.round(W0/11));while(fl.length<n)fl.push(mk(true));fl.length=n;}
+  function mk(any){var big=Math.random()<.12;return {x:Math.random()*W0,y:any?Math.random()*H0:-10,r:big?4+Math.random()*3:0.8+Math.random()*2.2,
+    vy:big?.45+Math.random()*.4:.35+Math.random()*.9,ph:Math.random()*6.28,sw:.3+Math.random()*.8,a:.35+Math.random()*.5,big:big,rot:Math.random()*6.28};}
+  function draw(t){var dt=Math.min(50,t-(t0||t));t0=t;ctx.clearRect(0,0,W0,H0);
+    for(var i=0;i<fl.length;i++){var f=fl[i];f.y+=f.vy*dt/16;f.ph+=.012*dt/16;f.x+=Math.sin(f.ph)*f.sw*.4;f.rot+=.004*dt;
+      if(f.y>H0+10||f.x<-20||f.x>W0+20){fl[i]=mk(false);continue;}
+      ctx.globalAlpha=f.a;
+      if(f.big){ctx.save();ctx.translate(f.x,f.y);ctx.rotate(f.rot);ctx.strokeStyle="#ffffff";ctx.lineWidth=1.2;ctx.lineCap="round";
+        for(var k=0;k<6;k++){ctx.rotate(Math.PI/3);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,f.r*1.6);ctx.moveTo(0,f.r);ctx.lineTo(f.r*.5,f.r*1.35);ctx.moveTo(0,f.r);ctx.lineTo(-f.r*.5,f.r*1.35);ctx.stroke();}
+        ctx.restore();}
+      else{ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,6.283);ctx.fillStyle="#ffffff";ctx.fill();}}
+    ctx.globalAlpha=1;raf=requestAnimationFrame(draw);}
+  window.addEventListener("resize",size);
+  return {start:function(){if(raf)return;size();cv.style.display="block";t0=0;raf=requestAnimationFrame(draw);},
+          stop:function(){if(raf)cancelAnimationFrame(raf);raf=0;ctx.clearRect(0,0,W0,H0);cv.style.display="none";}};
+})();
+function setSnow(on){snowOn=on;try{localStorage.setItem("advent-snow",on?"1":"0");}catch(_){}if(on)snow.start();else snow.stop();}
+
 /* ---------- boot ---------- */
 render();
+if(snowOn)snow.start();
+(function(){var sc=root.querySelector(".mapscroll");if(sc&&sc.scrollWidth>sc.clientWidth+10){sc.scrollLeft=sc.scrollWidth*0.42-sc.clientWidth/2;}})();
 if(location.hash==="#admin"){state.canEdit=true;render();}
 if(window.claude&&window.claude.use){
   window.claude.use("user").then(function(u){
