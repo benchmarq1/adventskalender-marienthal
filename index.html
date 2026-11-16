@@ -28,14 +28,14 @@ h1{font-family:"Fraunces",serif;font-weight:700;font-size:clamp(28px,4.4vw,46px)
 .mapnote{position:absolute;left:12px;bottom:10px;font-size:11px;color:#8fb09b;pointer-events:none;background:rgba(10,31,21,.7);padding:2px 8px;border-radius:6px}
 .star{cursor:pointer;outline:none}
 .star .shape{fill:var(--gold);stroke:#fff3cf;stroke-width:2.4;filter:url(#glow);transition:transform .15s}
-.star text{font:700 22px "Work Sans",sans-serif;fill:#3a2600;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.star text{font:700 26px "Work Sans",sans-serif;fill:#3a2600;text-anchor:middle;dominant-baseline:central;pointer-events:none}
 .star:hover .shape,.star:focus-visible .shape{transform:scale(1.18)}
 .star.past .shape{fill:#8a7440;stroke:#b9a56f;filter:none}
 .star.past text{fill:#2a2110}
 .star.sel .shape{transform:scale(1.32);stroke:var(--red-hi);stroke-width:5}
 .star.today .halo{animation:pulse 1.8s ease-out infinite}
 .halo{fill:none;stroke:var(--red-hi);stroke-width:4;opacity:0}
-@keyframes pulse{0%{r:28px;opacity:.9}100%{r:70px;opacity:0}}
+@keyframes pulse{0%{r:34px;opacity:.9}100%{r:84px;opacity:0}}
 .editing .star{cursor:grab}
 .placing svg{cursor:crosshair}
 .pop{position:absolute;z-index:5;width:270px;background:#fffaf0;color:#2a2112;border-radius:14px;padding:14px 16px 14px;box-shadow:0 14px 40px rgba(0,0,0,.45);transform:translate(-50%,calc(-100% - 22px))}
@@ -111,7 +111,7 @@ footer{margin-top:40px;color:#7f9d89;font-size:12px}
   .settings{grid-template-columns:1fr}
 }
 @media (max-width:640px){
-  .mapcard svg{min-width:820px}
+  .mapcard svg{min-width:1000px}
   .pop,.pop.below{position:fixed;left:12px!important;right:12px;top:auto!important;bottom:12px;width:auto;transform:none}
   .pop::after{display:none}
   .status{white-space:normal}
@@ -120,11 +120,11 @@ footer{margin-top:40px;color:#7f9d89;font-size:12px}
 </head>
 <body>
 <div id="root"></div>
-<script type="application/json" id="advent-data">{"year": 2026, "title": "Lebendiger Adventskalender Marienthal", "intro": "Vom 1. bis 24. Dezember öffnet jeden Abend ein anderes Haus in unserer Nachbarschaft seine Tür – mit Glühwein, Punsch und manchmal kleinen Leckereien. Klick auf einen Stern, um zu sehen, wo und wann.", "city": "22043 Hamburg", "doors": [{"n": 1, "street": "Ernst-Albers-Straße 19", "host": "Familie Papenhagen", "from": "18:45", "to": "19:15", "note": "", "x": 1310, "y": 1157}, {"n": 2, "street": "", "host": "", "from": "18:45", "to": "19:15", "note": "", "x": 1700, "y": 1640}, {"n": 3, "street": "", "host": "", "from": "18:45", "to": "19:15", "note": "", "x": 1780, "y": 1640}, {"n": 4, "street": "Ernst-Albers-Straße 11", "host": "Familie Gauglitz", "from": "18:45", "to": "19:15", "note": "", "x": 1261, "y": 1045}, {"n": 5, "street": "Behrensstraße 14", "host": "Familie Guthmann", "from": "18:45", "to": "19:15", "note": "", "x": 1668, "y": 1279}, {"n": 6, "street": "Nöpps 40", "host": "Familie Wibbecke", "from": "18:45", "to": "19:15", "note": "", "x": 1201, "y": 1289}, {"n": 7, "street": "", "host": "", "from": "18:45", "to": "19:15", "note": "Reserviert. Infos folgen", "x": 1860, "y": 1640}, {"n": 8, "street": "Ernst-Albers-Straße 40", "host": "Christiane u. Stephan", "from": "18:45", "to": "19:15", "note": "", "x": 1355, "y": 1437}, {"n": 9, "street": "Kielmannseggstraße 95", "host": "Familie Klitzke / Mansour", "from": "18:45", "to": "19:15", "note": "", "x": 1778, "y": 1234}, {"n": 10, "street": "Nöpps 61", "host": "Familie Kaß", "from": "18:45", "to": "19:15", "note": "", "x": 1507, "y": 1061}, {"n": 11, "street": "Nöpps 62", "host": "Familie Kusch", "from": "18:45", "to": "19:15", "note": "", "x": 1589, "y": 1090}, {"n": 12, "street": "An der Marienanlage 16", "host": "Familie Sonne", "from": "18:45", "to": "19:15", "note": "", "x": 648, "y": 1108}, {"n": 13, "street": "Kielmannseggstraße 46", "host": "Familie Baumann", "from": "18:45", "to": "19:15", "note": "", "x": 2134, "y": 154}, {"n": 14, "street": "Am Husarendenkmal 52", "host": "Familie Quack", "from": "18:45", "to": "19:15", "note": "", "x": 607, "y": 1254}, {"n": 15, "street": "Ahornstraße 17", "host": "Familie John", "from": "18:45", "to": "19:15", "note": "", "x": 1148, "y": 1000}, {"n": 16, "street": "Kielmannseggstraße 102", "host": "Susi und Martin", "from": "18:45", "to": "19:15", "note": "", "x": 1938, "y": 1245}, {"n": 17, "street": "Nöpps 50", "host": "Familie Surholt / Becker", "from": "18:45", "to": "19:15", "note": "", "x": 1390, "y": 1197}, {"n": 18, "street": "Oktaviostraße 30a", "host": "Familie Schaller", "from": "18:45", "to": "19:15", "note": "", "x": 1540, "y": 943}, {"n": 19, "street": "Kielmannseggstraße 87", "host": "Amanda Kleinbart", "from": "16:30", "to": "17:00", "note": "Diesmal schon am Nachmittag!", "x": 1843, "y": 1207}, {"n": 20, "street": "Kielmannseggstraße 174", "host": "Familie Willmanns", "from": "18:45", "to": "19:15", "note": "", "x": 1142, "y": 1481}, {"n": 21, "street": "Oktaviostraße 1g", "host": "Anne u. Manni", "from": "18:45", "to": "", "note": "Gleichzeitig Sonnenwendfeier", "x": 1233, "y": 863}, {"n": 22, "street": "Kielmannseggstieg 4", "host": "Dörte und Ralf Michels", "from": "18:45", "to": "19:15", "note": "", "x": 1831, "y": 1317}, {"n": 23, "street": "Ernst-Albers-Straße 16", "host": "Familie Finne", "from": "18:45", "to": "19:15", "note": "", "x": 1188, "y": 1069}, {"n": 24, "street": "Kielmannseggstraße 118", "host": "Familie Gnekow", "from": "23:00", "to": "", "note": "Heiligabend", "x": 1721, "y": 1351}]}</script>
+<script type="application/json" id="advent-data">{"year": 2026, "title": "Lebendiger Adventskalender Marienthal", "intro": "Vom 1. bis 24. Dezember öffnet jeden Abend ein anderes Haus in unserer Nachbarschaft seine Tür – mit Glühwein, Punsch und manchmal kleinen Leckereien. Klick auf einen Stern, um zu sehen, wo und wann.", "city": "22043 Hamburg", "doors": [{"n": 1, "street": "Ernst-Albers-Straße 19", "host": "Familie Papenhagen", "from": "18:45", "to": "19:15", "note": "", "x": 1310, "y": 1157}, {"n": 2, "street": "", "host": "", "from": "18:45", "to": "19:15", "note": "", "x": 1700, "y": 1640}, {"n": 3, "street": "Ernst-Albers-Strasse 30", "host": "Britta u. Michael Schuckmann", "from": "18:45", "to": "19:15", "note": "", "x": 1282, "y": 1283}, {"n": 4, "street": "Ernst-Albers-Straße 11", "host": "Familie Gauglitz", "from": "18:45", "to": "19:15", "note": "", "x": 1261, "y": 1045}, {"n": 5, "street": "Behrensstraße 14", "host": "Familie Guthmann", "from": "18:45", "to": "19:15", "note": "", "x": 1668, "y": 1279}, {"n": 6, "street": "Nöpps 40", "host": "Familie Wibbecke", "from": "18:45", "to": "19:15", "note": "", "x": 1201, "y": 1289}, {"n": 7, "street": "Kindergarten Marienkäfer", "host": "Kindergarten Marienkäfer", "from": "18:45", "to": "19:15", "note": "", "x": 3118, "y": 463}, {"n": 8, "street": "Ernst-Albers-Straße 40", "host": "Christiane u. Stephan", "from": "18:45", "to": "19:15", "note": "", "x": 1355, "y": 1437}, {"n": 9, "street": "Kielmannseggstraße 95", "host": "Familie Klitzke / Mansour", "from": "18:45", "to": "19:15", "note": "", "x": 1778, "y": 1234}, {"n": 10, "street": "Nöpps 61", "host": "Familie Kaß", "from": "18:45", "to": "19:15", "note": "", "x": 1507, "y": 1061}, {"n": 11, "street": "Nöpps 62", "host": "Familie Kusch", "from": "18:45", "to": "19:15", "note": "", "x": 1589, "y": 1090}, {"n": 12, "street": "An der Marienanlage 16", "host": "Familie Sonne", "from": "18:45", "to": "19:15", "note": "", "x": 648, "y": 1108}, {"n": 13, "street": "Kielmannseggstraße 46", "host": "Familie Baumann", "from": "18:45", "to": "19:15", "note": "", "x": 2134, "y": 154}, {"n": 14, "street": "Am Husarendenkmal 52", "host": "Familie Quack", "from": "18:45", "to": "19:15", "note": "", "x": 607, "y": 1254}, {"n": 15, "street": "Ahornstraße 17", "host": "Familie John", "from": "18:45", "to": "19:15", "note": "", "x": 1148, "y": 1000}, {"n": 16, "street": "Kielmannseggstraße 102", "host": "Susi und Martin", "from": "18:45", "to": "19:15", "note": "", "x": 1938, "y": 1245}, {"n": 17, "street": "Nöpps 50", "host": "Familie Surholt / Becker", "from": "18:45", "to": "19:15", "note": "", "x": 1390, "y": 1197}, {"n": 18, "street": "Oktaviostraße 30a", "host": "Familie Schaller", "from": "18:45", "to": "19:15", "note": "", "x": 1540, "y": 943}, {"n": 19, "street": "Kielmannseggstraße 87", "host": "Amanda Kleinbart", "from": "16:30", "to": "17:00", "note": "Diesmal schon am Nachmittag!", "x": 1843, "y": 1207}, {"n": 20, "street": "Kielmannseggstraße 174", "host": "Familie Willmanns", "from": "18:45", "to": "19:15", "note": "", "x": 1142, "y": 1481}, {"n": 21, "street": "Oktaviostraße 1g", "host": "Anne u. Manni", "from": "18:45", "to": "", "note": "Gleichzeitig Sonnenwendfeier", "x": 1233, "y": 863}, {"n": 22, "street": "Kielmannseggstieg 4", "host": "Dörte und Ralf Michels", "from": "18:45", "to": "19:15", "note": "", "x": 1831, "y": 1317}, {"n": 23, "street": "Ernst-Albers-Straße 16", "host": "Familie Finne", "from": "18:45", "to": "19:15", "note": "", "x": 1188, "y": 1069}, {"n": 24, "street": "Kielmannseggstraße 118", "host": "Familie Gnekow", "from": "23:00", "to": "", "note": "Heiligabend", "x": 1721, "y": 1351}]}</script>
 <script id="app">
 (function(){
 "use strict";
-var W=2462,H=1715,DY=460,W3F="1252e4e4-b5f2-48ac-87a4-d0547c6e60de";
+var W=3500,H=1715,DY=460,W3F="1252e4e4-b5f2-48ac-87a4-d0547c6e60de";
 var data=JSON.parse(document.getElementById("advent-data").textContent);
 var state={sel:null,editing:false,draft:null,placing:null,canEdit:false,msg:"",msgErr:false,hl:null};
 var root=document.getElementById("root");
@@ -146,7 +146,7 @@ function statusText(){
   var n=t.getDate(),d=door(n);return "Heute: Türchen "+n+(d&&d.street?" · "+d.street:"");
 }
 function starPath(R,r){var p=[];for(var i=0;i<10;i++){var a=-Math.PI/2+i*Math.PI/5,rad=i%2?r:R;p.push((Math.cos(a)*rad).toFixed(1)+","+(Math.sin(a)*rad).toFixed(1));}return p.join(" ");}
-var STAR=starPath(36,16);
+var STAR=starPath(44,19);
 function mapsLink(d){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(d.street+", "+cur().city);}
 
 /* ---------- Karte (vereinfacht nachgezeichnet nach dem realen Straßenverlauf) ---------- */
@@ -214,6 +214,56 @@ var NORTH=[
  {name:"",pts:[[2305,410],[2315,505]],lab:[]},
  {name:"",pts:[[1075,450],[1165,420]],lab:[]}
 ];
+
+var EAST_MAJOR=[
+ {name:"Rodigallee",pts:[[2462,452],[2766,370],[3053,289],[3500,175]],lab:[[1,.5]],w:24,fill:"#4c735d"},
+ {name:"A 24",pts:[[2462,1390],[3500,1210]],lab:[],w:34,fill:"#6d5a3c",motorway:true}
+];
+var EAST=[
+ {name:"Osterkamp",pts:[[2615,0],[2665,170],[2737,380],[2788,531],[2845,709],[2885,883]],lab:[[3,.5],[4,.5]]},
+ {name:"Mittelkamp",pts:[[2465,0],[2525,175],[2565,260],[2645,402]],lab:[[1,.5]]},
+ {name:"Schimmelmannstraße",pts:[[2462,195],[2806,85]],lab:[]},
+ {name:"Zikadenweg",pts:[[2781,531],[2917,488],[3023,455],[3144,433],[3296,421],[3348,417]],lab:[[0,.5],[3,.5]]},
+ {name:"",pts:[[3296,421],[3284,376]],lab:[]},
+ {name:"",pts:[[3027,459],[3057,535]],lab:[]},
+ {name:"",pts:[[3137,448],[3148,497]],lab:[]},
+ {name:"",pts:[[3318,486],[3454,452]],lab:[]},
+ {name:"",pts:[[3311,429],[3330,542]],lab:[]},
+ {name:"Holstenhofweg",pts:[[3390,200]].concat([[3417,285],[3447,383],[3492,588],[3523,709]]),lab:[[2,.5]]},
+ {name:"Oktaviostraße",pts:[[2462,1175]].concat([[2554,1085],[2887,891],[2917,906],[2993,919],[3068,883],[3152,822],[3216,769],[3280,724],[3348,682]]),lab:[[1,.45],[6,.5]]},
+ {name:"Oktaviostraße",pts:[[3034,766],[3042,815],[3065,879]],lab:[[1,.5]]},
+ {name:"Zirpenweg",pts:[[2462,1320]].concat([[2819,1085],[3065,883]]),lab:[[1,.5]]},
+ {name:"",pts:[[3076,887],[3137,959],[3110,1085]],lab:[]},
+ {name:"",pts:[[3144,849],[3190,906],[3243,928],[3296,951]],lab:[]},
+ {name:"Derbyweg",pts:[[2462,1500],[3500,1330]],lab:[]}
+];
+var EAST_PATH=[[2841,720],[2917,686],[2955,656],[3068,618],[3182,603],[3296,626],[3356,679],[3447,739],[3523,754]];
+var EAST_PARKS=[
+ [[2462,512]].concat([[2160,626],[2349,535],[2675,483],[2735,573],[2788,709],[2788,853],[2690,928],[2554,1004],[2349,1042],[2160,1085]]).concat([[2462,1150]]),
+ [[2906,637],[2981,535],[3004,535],[3012,565],[2917,641]]
+];
+function eastParks(){
+  var s="";
+  EAST_PARKS.forEach(function(p){s+='<polygon points="'+line(p)+'" fill="#1b4a30"/><polygon points="'+line(p)+'" fill="url(#trees)" opacity=".7"/>';});
+  s+='<path d="M2425 754 a95 47 0 1 0 189 0 a95 47 0 1 0 -189 0 Z" fill="#3c7a8c"/>';
+  s+='<ellipse cx="2512" cy="758" rx="45" ry="23" fill="#1b4a30"/>';
+  return s;
+}
+function eastStreets(){
+  var s='<polyline points="'+line(EAST_PATH)+'" fill="none" stroke="#5b8a70" stroke-width="4" stroke-dasharray="10 9"/>';
+  s+=labelsFor({name:"Husarenweg",pts:EAST_PATH,lab:[[3,.5]]},18,"#a9c7b4");
+  EAST.forEach(function(st){s+='<polyline points="'+line(st.pts)+'" fill="none" stroke="#0c2617" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>';});
+  EAST.forEach(function(st){s+='<polyline points="'+line(st.pts)+'" fill="none" stroke="#3a6650" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>';});
+  EAST_MAJOR.forEach(function(st){s+='<polyline points="'+line(st.pts)+'" fill="none" stroke="#0c2617" stroke-width="'+(st.w+8)+'" stroke-linecap="round" stroke-linejoin="round"/>';});
+  EAST_MAJOR.forEach(function(st){s+='<polyline points="'+line(st.pts)+'" fill="none" stroke="'+st.fill+'" stroke-width="'+st.w+'" stroke-linecap="round" stroke-linejoin="round"/>';
+    if(st.motorway)s+='<polyline points="'+line(st.pts)+'" fill="none" stroke="#123323" stroke-width="3" stroke-dasharray="26 20"/>';});
+  EAST.forEach(function(st){if(st.name)s+=labelsFor(st,21,"#c9dccf");});
+  EAST_MAJOR.forEach(function(st){s+=labelsFor(st,23,"#f0e6d2");});
+  s+='<g transform="translate(3050,1287)"><rect x="-26" y="-15" width="52" height="30" rx="7" fill="#2b5aa8" stroke="#fff" stroke-width="2.5"/><text text-anchor="middle" dominant-baseline="central" font-size="19" font-weight="700" fill="#fff">A24</text></g>';
+  s+='<text x="2917" y="580" font-size="17" font-style="italic" fill="#8fc4a2" text-anchor="middle">Spielplatz</text>';
+  s+='<text x="3401" y="883" font-size="19" font-style="italic" fill="#8fb39c" text-anchor="middle">Gymnasium Marienthal</text>';
+  return s;
+}
 function northMap(){
   var s='<polygon points="1345,232 1655,232 1655,395 1345,395" fill="#1d3f2c" stroke="#2a5a40" stroke-width="2"/>';
   s+='<text x="1500" y="320" font-size="20" fill="#8fb39c" text-anchor="middle" font-style="italic">Asklepios Klinik Wandsbek</text>';
@@ -229,10 +279,11 @@ function baseMap(){
      '<pattern id="trees" width="44" height="44" patternUnits="userSpaceOnUse"><circle cx="12" cy="14" r="7" fill="#235a3b"/><circle cx="33" cy="32" r="6" fill="#205236"/></pattern></defs>';
   s+='<rect width="'+W+'" height="'+H+'" fill="#123323"/>';
   s+=northMap();
+  s+=eastParks();
   s+='<g transform="translate(0,'+DY+')">';
   PARKS.forEach(function(p){s+='<polygon points="'+line(p)+'" fill="#1b4a30"/><polygon points="'+line(p)+'" fill="url(#trees)" opacity=".7"/>';});
   /* Wasser */
-  s+='<ellipse cx="770" cy="688" rx="46" ry="28" fill="#3c7a8c"/><ellipse cx="1735" cy="242" rx="46" ry="30" fill="#3c7a8c"/><ellipse cx="2462" cy="300" rx="34" ry="52" fill="#3c7a8c"/>';
+  s+='<ellipse cx="770" cy="688" rx="46" ry="28" fill="#3c7a8c"/><ellipse cx="1735" cy="242" rx="46" ry="30" fill="#3c7a8c"/>';
   /* Nebenstraßen */
   STREETS.forEach(function(st){s+='<polyline points="'+line(st.pts)+'" fill="none" stroke="#0c2617" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>';});
   STREETS.forEach(function(st){s+='<polyline points="'+line(st.pts)+'" fill="none" stroke="#3a6650" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>';});
@@ -248,9 +299,9 @@ function baseMap(){
   MAJOR.forEach(function(st){s+=labelsFor(st,23,"#f0e6d2");});
   /* A24-Schilder */
   [[900,1185],[1640,1066],[2250,968]].forEach(function(p){s+='<g transform="translate('+p[0]+','+p[1]+')"><rect x="-26" y="-15" width="52" height="30" rx="7" fill="#2b5aa8" stroke="#fff" stroke-width="2.5"/><text text-anchor="middle" dominant-baseline="central" font-size="19" font-weight="700" fill="#fff">A24</text></g>';});
-  /* Kompass */
-  s+='<g transform="translate(2390,1180)"><circle r="38" fill="#0f2c1d" stroke="#2f5c42" stroke-width="2"/><path d="M0 -26 L10 8 L0 0 L-10 8Z" fill="#d23c34"/><text y="26" text-anchor="middle" font-size="17" fill="#c9dccf">N</text></g>';
   s+='</g>';
+  s+=eastStreets();
+  s+='<g transform="translate(3420,1640)"><circle r="38" fill="#0f2c1d" stroke="#2f5c42" stroke-width="2"/><path d="M0 -26 L10 8 L0 0 L-10 8Z" fill="#d23c34"/><text y="26" text-anchor="middle" font-size="17" fill="#c9dccf">N</text></g>';
   return s;
 }
 var BASE=baseMap();
@@ -298,7 +349,7 @@ function msgHTML(){return state.msg?'<span class="msg'+(state.msgErr?" err":"")+
 function popupHTML(){
   if(state.sel==null||state.placing)return "";
   var d=door(state.sel);if(!d)return "";
-  var below=d.y<640,left=Math.min(Math.max(d.x/W*100,14),86),top=d.y/H*100;
+  var below=d.y<600,left=Math.min(Math.max(d.x/W*100,14),86),top=d.y/H*100;
   return '<div class="pop'+(below?" below":"")+'" style="left:'+left+'%;top:'+top+'%">'+
     '<button class="pop-x" data-act="close" aria-label="Schließen">×</button>'+
     '<div class="pop-day">Türchen '+d.n+' · '+esc(fmtDate(d.n))+'</div>'+
