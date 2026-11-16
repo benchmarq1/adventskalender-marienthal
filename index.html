@@ -239,12 +239,16 @@ var EAST=[
 ];
 var EAST_PATH=[[2841,720],[2917,686],[2955,656],[3068,618],[3182,603],[3296,626],[3356,679],[3447,739],[3523,754]];
 var EAST_PARKS=[
- [[2462,512]].concat([[2160,626],[2349,535],[2675,483],[2735,573],[2788,709],[2788,853],[2690,928],[2554,1004],[2349,1042],[2160,1085]]).concat([[2462,1150]]),
+ [[2462,512],[2580,500],[2675,483],[2735,573],[2788,709],[2788,853],[2690,928],[2554,1004],[2462,1150]],
  [[2906,637],[2981,535],[3004,535],[3012,565],[2917,641]]
 ];
 function eastParks(){
+  var s='<g transform="translate(0,'+DY+')">';
+  EAST_PARKS.forEach(function(p){var q=p.map(function(v){return [v[0],v[1]-DY];});s+='<polygon points="'+line(q)+'" fill="#1b4a30"/><polygon points="'+line(q)+'" fill="url(#trees)" opacity=".7"/>';});
+  return s+'</g>';
+}
+function eastPond(){
   var s="";
-  EAST_PARKS.forEach(function(p){s+='<polygon points="'+line(p)+'" fill="#1b4a30"/><polygon points="'+line(p)+'" fill="url(#trees)" opacity=".7"/>';});
   s+='<path d="M2425 754 a95 47 0 1 0 189 0 a95 47 0 1 0 -189 0 Z" fill="#3c7a8c"/>';
   s+='<ellipse cx="2512" cy="758" rx="45" ry="23" fill="#1b4a30"/>';
   return s;
@@ -300,6 +304,7 @@ function baseMap(){
   /* A24-Schilder */
   [[900,1185],[1640,1066],[2250,968]].forEach(function(p){s+='<g transform="translate('+p[0]+','+p[1]+')"><rect x="-26" y="-15" width="52" height="30" rx="7" fill="#2b5aa8" stroke="#fff" stroke-width="2.5"/><text text-anchor="middle" dominant-baseline="central" font-size="19" font-weight="700" fill="#fff">A24</text></g>';});
   s+='</g>';
+  s+=eastPond();
   s+=eastStreets();
   s+='<g transform="translate(3420,1640)"><circle r="38" fill="#0f2c1d" stroke="#2f5c42" stroke-width="2"/><path d="M0 -26 L10 8 L0 0 L-10 8Z" fill="#d23c34"/><text y="26" text-anchor="middle" font-size="17" fill="#c9dccf">N</text></g>';
   return s;
